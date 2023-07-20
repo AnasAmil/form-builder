@@ -7,7 +7,7 @@ const Dnd  = () => {
   const [editMode, setEditMode] = useState<boolean>(false)
   return (
     <DndProvider backend={HTML5Backend}>
-        <div className='w-full flex items-center gap-[20%] h-full bg-red-500'>
+        <div className='w-full flex items-center gap-[20%] h-full'>
             <Droppables  editMode={editMode} setEditMode={setEditMode}/>
         </div>
     </DndProvider>

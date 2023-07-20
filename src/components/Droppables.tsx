@@ -3,8 +3,9 @@ import Input from './Input'
 import { useDrop } from 'react-dnd'
 import { InputInterface } from '../Types'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
-import { IconForms, IconAt, IconSelect, IconCalendar } from '@tabler/icons-react'
+import { IconForms, IconAt, IconSelect, IconCalendar, IconDeviceFloppy, IconTrash  } from '@tabler/icons-react'
 import Draft from './Draft'
+import { Button, FormControlLabel, Switch } from '@mui/material'
 
 const InputList: InputInterface[] = [
     {
@@ -78,7 +79,7 @@ const Droppables = ({editMode, setEditMode}: DroppableProps) => {
 
   const confirmDraft = (id:number, newValue:InputInterface) => {
     setBoard((current) =>
-        current.map((draft) => (draft.id === id ? {...draft, ...newValue, isDraft: !draft.isDraft} : {...draft, label: 'hhhhhhh'}))
+        current.map((draft) => (draft.id === id ? {...draft, ...newValue, isDraft: !draft.isDraft} : draft))
    )   
   }
   
@@ -88,31 +89,72 @@ const Droppables = ({editMode, setEditMode}: DroppableProps) => {
   
   return (
     <>
-        <div className='min-h-[200px] min-w-[250px] h-full border-r flex flex-col items-center px-3 gap-3 sidebar visible'>
-            <div className='flex font-semibold gap-1 py-4'>
-                <DashboardOutlinedIcon sx={{color: '#87D6F1'}} />
-                <h2>Form Elements</h2>
-            </div>
-            {
-                InputList.map((input) => {
-                    return (
-                        <Input input={input} key={input.id}/>
-                    )
-                })
-            }
-        </div>
-        <div>
-
-            <div ref={drop} className=' min-w-[700px] h-[500px] border border-dashed rounded-lg p-5 flex flex-col gap-3 overflow-y-scroll' >
+        {
+            editMode && 
+            <div className={`min-h-[200px] min-w-[250px] h-full border-r flex flex-col items-center px-3 gap-3 sidebar `}>
+                <div className='flex font-semibold gap-1 py-4'>
+                    <DashboardOutlinedIcon sx={{color: '#87D6F1'}} />
+                    <h2>Form Elements</h2>
+                </div>
                 {
-                    board.map((input) => {
-                        if (input.isDraft) {
-                            return <Draft key={input.id} input={input} confirmDraft={confirmDraft} removeDraft={removeDraft} />
-                        }
-                        return <h1 key={input.id}>{input.label}</h1>
+                    InputList.map((input) => {
+                        return (
+                            <Input input={input} key={input.id}/>
+                        )
                     })
                 }
             </div>
+        }
+        
+        <div className='flex flex-col items-end'>
+            <FormControlLabel sx={{paddingY: '5px'}} label='Edit Mode' control={<Switch checked={editMode} onChange={(e) => setEditMode(e.target.checked)}/>} />
+            {
+                editMode &&
+                <div className='flex flex-col items-end'>
+                    <div ref={drop} className=' min-w-[700px] h-[500px] border border-dashed rounded-lg p-5 flex flex-col gap-3 overflow-y-scroll' >
+                    {
+                        board.map((input) => {
+                            if (input.isDraft) {
+                                return <Draft key={input.id} input={input} confirmDraft={confirmDraft} removeDraft={removeDraft} />
+                            }
+                            return <h1 key={input.id}>{input.label}</h1>
+                        })
+                    }
+                    
+                    </div>
+
+                    <div className='py-5 flex gap-2'>
+                        <Button
+                            sx={{
+                                backgroundColor: '#F44336',
+                                color: 'white',
+                                textTransform: 'none',
+                                fontWeight: 'semibold',
+                                boxShadow: 0,
+                                '&:hover': {
+                                    backgroundColor: '#F44336',
+                                    boxShadow: 0
+                                }
+                            }}
+                            startIcon={<IconTrash />}
+                        >Clear</Button>
+                        <Button
+                            sx={{
+                                backgroundColor: '#268D8D',
+                                color: 'white',
+                                textTransform: 'none',
+                                fontWeight: 'semibold',
+                                boxShadow: 0,
+                                '&:hover': {
+                                    backgroundColor: '#268D8D',
+                                    boxShadow: 0
+                                }
+                            }}
+                            startIcon={<IconDeviceFloppy />}
+                        >Save</Button>
+                    </div>
+                </div>
+            }
         </div>
        
     </>
