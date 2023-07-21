@@ -1,4 +1,63 @@
 .App {
-  text-align: center;
+  @apply flex items-center justify-around min-h-[100vh];
 }
 
+.Dnd-container {
+  @apply w-full flex items-center justify-around flex-col;
+}
+
+.sidebar {
+  @apply min-w-[250px] min-h-[575px] border flex flex-col items-center px-3 gap-3 rounded-lg;
+}
+
+.Input-container {
+  @apply w-full flex flex-col gap-3
+}
+
+.Dropzone {
+  @apply min-w-[700px] h-[500px] bg-[#F8F9FA] border border-dashed rounded-lg p-5 flex flex-col gap-3 overflow-y-scroll;
+}
+
+.Draft-holder {
+  @apply border-[#7DC4FC] border-2 rounded-lg p-3 bg-white shadow-md;
+}
+
+.Draft-header {
+  @apply border-b flex items-center justify-between;
+}
+
+.Chip-holder {
+  @apply w-full border border-dashed rounded-md min-h-[50px] flex items-center p-3 gap-3;
+}
+
+.Confirmed-input {
+  @apply bg-white p-5 rounded-lg shadow-md flex items-center gap-3 relative;
+}
+
+.Edit-input {
+  @apply absolute top-[-10px] left-[-10px] bg-white p-1 rounded-2xl border cursor-pointer;
+}
+
+.Droppables-container {
+  @apply flex items-center justify-around w-full;
+}
+
+@media screen and (max-width: 1000px){
+
+  .sidebar {
+    @apply w-full min-h-[120px] py-3
+  }
+
+  .Input-container {
+    @apply flex-row 
+  }
+  .Droppables-container {
+    @apply flex-col gap-10
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .Dropzone {
+    @apply min-w-[500px] 
+  }
+}

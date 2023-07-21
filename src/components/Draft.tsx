@@ -29,9 +29,8 @@ const Draft = ({input, confirmDraft, removeDraft}:childProps) => {
     
     
   return (
-    <div className='border-[#7DC4FC] border-2 rounded-lg p-3 bg-white shadow-md'>
-        <header>
-            <div className='border-b flex items-center justify-between'>
+    <div className='Draft-holder'>
+        <header className='Draft-header'>
                 <div className='flex p-2 items-center gap-2'>
                     <div style={{backgroundColor: input.color, padding: '5px', borderRadius: '5px'}}>
                         {input.icon}
@@ -74,7 +73,6 @@ const Draft = ({input, confirmDraft, removeDraft}:childProps) => {
                         onClick={() => handleDoneClick(input.id)}
                     >Done</Button>
                 </div>
-            </div>
         </header>
         <div className='mt-5 flex flex-col gap-3'>
             <TextField 
@@ -107,7 +105,7 @@ const Draft = ({input, confirmDraft, removeDraft}:childProps) => {
                         <IconSquareRoundedPlusFilled size={30} className='cursor-pointer' onClick={addOption}/>
                     </div>
                     
-                    <div className='w-fill border border-dashed rounded-md min-h-[50px] flex items-center p-3 gap-3'>
+                    <div className='Chip-holder'>
                         {values.options.map((option, index) => (
                             <Chip  key={index} label={option} variant='outlined' />
                         ))}

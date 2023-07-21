@@ -1,6 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField, SelectChangeEvent } from '@mui/material'
-import { useDrag } from 'react-dnd';
 import React from 'react'
+import { FormControl, InputLabel, MenuItem, Select, TextField, SelectChangeEvent } from '@mui/material'
 import { InputInterface } from '../Types'
 import { IconGripVertical, IconEdit } from '@tabler/icons-react';
 
@@ -13,14 +12,6 @@ interface ConfirmedInputProps {
 
 const ConfirmedInput = ({input, editInput, board, setBoard}:ConfirmedInputProps) => {
 
-
-  const [{isDragging}, drag] = useDrag(() => ({
-    type: "List_Input",
-    item: input,
-    collect: (monitor) => ({
-        isDragging: !!monitor.isDragging()
-    })
-  }))
 
   const handleEditClick = (id: number) => {
     editInput(id)
@@ -46,8 +37,8 @@ const ConfirmedInput = ({input, editInput, board, setBoard}:ConfirmedInputProps)
   };
 
   return (
-    <div className='bg-white p-5 rounded-lg shadow-md flex items-center gap-3 relative' ref={drag}>
-      <div className='absolute top-[-10px] left-[-10px] bg-white p-1 rounded-2xl border cursor-pointer' onClick={() => handleEditClick(input.id)}>
+    <div className='Confirmed-input'>
+      <div className='Edit-input' onClick={() => handleEditClick(input.id)}>
         <IconEdit color='#87D6F1' />
       </div>
       {

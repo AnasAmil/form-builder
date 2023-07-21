@@ -15,7 +15,7 @@ const columns: GridColDef[] = [
 
 const InputTable = ({ data }: InputTableProps) => {
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 400, width: '85%', marginTop: '80px' }}>
       <DataGrid
         rows={data}
         columns={columns}
