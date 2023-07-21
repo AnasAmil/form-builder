@@ -13,7 +13,7 @@ const Input = ({input}:{input: InputInterface}) => {
 
   return (
     <div 
-      className='rounded flex p-2 items-center w-full gap-2 cursor-pointer' 
+      className='rounded flex p-2 items-center w-full gap-2 cursor-pointer bg-white' 
       key={input.id} 
       ref={drag}
       style={{border: isDragging ? '1px solid #87D6F1' : '1px solid #E5E7EB'}}

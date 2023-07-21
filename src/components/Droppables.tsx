@@ -1,11 +1,13 @@
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState } from 'react'
 import Input from './Input'
 import { useDrop } from 'react-dnd'
 import { InputInterface } from '../Types'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import { IconForms, IconAt, IconSelect, IconCalendar, IconDeviceFloppy, IconTrash  } from '@tabler/icons-react'
 import Draft from './Draft'
-import { Button, FormControlLabel, Switch } from '@mui/material'
+import { Button} from '@mui/material'
+import ConfirmedInput from './ConfirmedInput'
+import InputTable from './InputTable'
 
 const InputList: InputInterface[] = [
     {
@@ -13,8 +15,10 @@ const InputList: InputInterface[] = [
         label: 'text',
         required: false,
         name: 'Text Field',
-        type: 'text',
+        inputType: 'text',
+        value: '',
         placeholder: 'text',
+        options: [],
         icon: <IconForms color='#297587' />,
         color: '#E9F7FD',
         isDraft: true,
@@ -24,8 +28,10 @@ const InputList: InputInterface[] = [
         label: 'email',
         required: true,
         name: 'Email',
-        type: 'email',
+        inputType: 'email',
+        value: '',
         placeholder: 'email',
+        options: [],
         icon: <IconAt color='#268D8D'/>,
         color: '#E9FDFD',
         isDraft: true,
@@ -35,8 +41,11 @@ const InputList: InputInterface[] = [
         label: 'dropDown',
         required: false,
         name: 'Dropdown',
-        type: 'option',
-        placeholder: 'option',
+        inputType: 'select',
+        value: '',
+        placeholder: 'select',
+        options : [
+        ],
         icon: <IconSelect color='#61127A'/>,
         color: '#F6E9FE',
         isDraft: true,
@@ -46,25 +55,26 @@ const InputList: InputInterface[] = [
         label: 'date',  
         required: false,    
         name: 'Date Field',
-        type: 'date',
+        inputType: 'date',
+        value: '',
         placeholder: 'date',
+        options: [],
         icon: <IconCalendar color='#2F7FC9'/>,
         color: '#E7F5FF',
         isDraft: true,
     }
 ]
 
-interface DroppableProps {
-    editMode: boolean;
-    setEditMode: Dispatch<SetStateAction<boolean>>;
-}
 
-const Droppables = ({editMode, setEditMode}: DroppableProps) => {
+
+const Droppables = () => {
 
   const [board, setBoard] = useState<InputInterface[]>([])
+  const [toggleTable, setToggleTable] = useState<boolean>(false)
+
 
   const [{isOver}, drop] = useDrop(() => ({
-    accept: "Input",
+    accept: ["Input", "List_Input"],
     drop: (item: InputInterface) => addInputToBoard(item),
     collect: (monitor) => ({
         isOver: !!monitor.isOver()
@@ -72,8 +82,9 @@ const Droppables = ({editMode, setEditMode}: DroppableProps) => {
   }))
 
 
-  const addInputToBoard = (input: InputInterface) => {
-    setBoard((board) => [...board, {...input, id: Math.floor(Math.random() * (100 - 1 + 1)) + 1}])
+  const addInputToBoard = (item: InputInterface) => {
+    setBoard((board) => [...board, {...item, id: Math.floor(Math.random() * (100 - 1 + 1)) + 1}])
+
     
   }
 
@@ -86,74 +97,85 @@ const Droppables = ({editMode, setEditMode}: DroppableProps) => {
   const removeDraft = (id: number) => {
     setBoard(current => current.filter((draft) => draft.id !== id))
   }
+
+  const editInput =  (id: number) => {
+    setBoard((current) =>
+        current.map((draft) => (draft.id === id ? {...draft, isDraft: !draft.isDraft} : draft))
+   ) 
+  }
+
+  const handleDrop = () => {
+
+  }
+
   
   return (
     <>
-        {
-            editMode && 
-            <div className={`min-h-[200px] min-w-[250px] h-full border-r flex flex-col items-center px-3 gap-3 sidebar `}>
-                <div className='flex font-semibold gap-1 py-4'>
-                    <DashboardOutlinedIcon sx={{color: '#87D6F1'}} />
-                    <h2>Form Elements</h2>
-                </div>
+        <div className={`min-w-[250px] min-h-[100vh] border-r flex flex-col items-center px-3 gap-3 sidebar `}>
+            <div className='flex font-semibold gap-1 py-4'>
+                <DashboardOutlinedIcon sx={{color: '#87D6F1'}} />
+                <h2>Form Elements</h2>
+            </div>
+            {
+                InputList.map((input) => {
+                    return (
+                        <Input input={input} key={input.id}/>
+                    )
+                })
+            }
+        </div>
+        <div className='flex flex-col items-end'>
+            <div className='flex flex-col items-end'  >
+                <div ref={drop} className=' min-w-[700px] h-[500px] bg-[#F8F9FA] border border-dashed rounded-lg p-5 flex flex-col gap-3 overflow-y-scroll' onDrop={handleDrop}>
                 {
-                    InputList.map((input) => {
-                        return (
-                            <Input input={input} key={input.id}/>
-                        )
+                    board.map((input) => {
+                        if (input.isDraft) {
+                            return <Draft key={input.id} input={input} confirmDraft={confirmDraft} removeDraft={removeDraft} />
+                        }
+                        return <ConfirmedInput key={input.id} input={input} editInput={editInput} board={board} setBoard={setBoard} />
                     })
                 }
-            </div>
-        }
-        
-        <div className='flex flex-col items-end'>
-            <FormControlLabel sx={{paddingY: '5px'}} label='Edit Mode' control={<Switch checked={editMode} onChange={(e) => setEditMode(e.target.checked)}/>} />
-            {
-                editMode &&
-                <div className='flex flex-col items-end'>
-                    <div ref={drop} className=' min-w-[700px] h-[500px] border border-dashed rounded-lg p-5 flex flex-col gap-3 overflow-y-scroll' >
-                    {
-                        board.map((input) => {
-                            if (input.isDraft) {
-                                return <Draft key={input.id} input={input} confirmDraft={confirmDraft} removeDraft={removeDraft} />
-                            }
-                            return <h1 key={input.id}>{input.label}</h1>
-                        })
-                    }
-                    
-                    </div>
-
-                    <div className='py-5 flex gap-2'>
-                        <Button
-                            sx={{
-                                backgroundColor: '#F44336',
-                                color: 'white',
-                                textTransform: 'none',
-                                fontWeight: 'semibold',
-                                boxShadow: 0,
-                                '&:hover': {
-                                    backgroundColor: '#F44336',
-                                    boxShadow: 0
-                                }
-                            }}
-                            startIcon={<IconTrash />}
-                        >Clear</Button>
-                        <Button
-                            sx={{
-                                backgroundColor: '#268D8D',
-                                color: 'white',
-                                textTransform: 'none',
-                                fontWeight: 'semibold',
-                                boxShadow: 0,
-                                '&:hover': {
-                                    backgroundColor: '#268D8D',
-                                    boxShadow: 0
-                                }
-                            }}
-                            startIcon={<IconDeviceFloppy />}
-                        >Save</Button>
-                    </div>
+                
                 </div>
+
+                <div className='py-5 flex gap-2'>
+                    <Button
+                        sx={{
+                            backgroundColor: '#F44336',
+                            color: 'white',
+                            textTransform: 'none',
+                            fontWeight: 'semibold',
+                            boxShadow: 0,
+                            '&:hover': {
+                                backgroundColor: '#F44336',
+                                boxShadow: 0
+                            }
+                        }}
+                        startIcon={<IconTrash />}
+                        onClick={() => {setBoard([]); setToggleTable(false)}}
+                    >Clear</Button>
+                    <Button
+                        sx={{
+                            backgroundColor: '#268D8D',
+                            color: 'white',
+                            textTransform: 'none',
+                            fontWeight: 'semibold',
+                            boxShadow: 0,
+                            '&:hover': {
+                                backgroundColor: '#268D8D',
+                                boxShadow: 0
+                            }
+                        }}
+                        type='submit'
+                        startIcon={<IconDeviceFloppy />}
+                        onClick={() => setToggleTable(true)}
+                    >Save</Button>
+                </div>
+            </div>
+
+            {
+                toggleTable && board.length > 0 &&
+                <InputTable data={board}/>
             }
         </div>
        
